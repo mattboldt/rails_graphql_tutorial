@@ -91,13 +91,13 @@ After installing `rack-cors`, we need to uncomment the config in `config/initial
 
 The final step to get `graphiql` running is to uncomment `require "sprockets/railtie"` in `application.rb`. Boot up your rails server with `rails s` and navigate to `http://localhost:3000/graphiql` to see the interface. Here we can run the following query to get a test response from the API.
 
-![graphiql demo](./images/graphiql_demo.png)
+![graphiql demo](./images/graphiql_hello_world.png)
 
 [View commit](https://github.com/mattboldt/rails_graphql_demo/commit/8253186e052bc1ebd02ccf8524cd19f32c22597f)
 
 ## Model Query Types
 
-For our models, `User` and `Book`, we need to create a series of `types` so GraphQL knows what kind of data to send back in the event of a request. Somewhat similar to Rails' [active_model_serializers](https://github.com/rails-api/active_model_serializers) or JBuilder, these types make up the structure of our models from the API's point of view. Here we'll specifiy what columns, model methods, and more return to the client application.
+For our models, `User` and `Book`, we need to create a series of `types` so GraphQL knows what kind of data to send back in the event of a request. Somewhat similar to Rails' [active_model_serializers](https://github.com/rails-api/active_model_serializers) or JBuilder, these types make up the structure of our models from the API's point of view. Here we'll specifiy what columns, model methods, and more return to the client application. [More info on declaring types can be found here.](http://graphql-ruby.org/getting_started#declare-types)
 
 ### User and Book query types
 
@@ -153,5 +153,108 @@ module Types
   end
 end
 ```
-
 [View commit](https://github.com/mattboldt/rails_graphql_demo/commit/e062713d17f8fb65c9d0a4cb31a4014cf795376a)
+
+### Testing queries with `graphiql`
+
+Visit `http://localhost:3000/graphiql` in your browser and paste in the following for the `users` and `user` query fields we added above. Here we specify exactly what we want the API to respond with; in this case, we only want a list of user names, emails, and the number of books they own.
+
+```gql
+query {
+  users {
+    name
+    email
+    booksCount
+  }
+}
+```
+
+We can also query a single user, along with all of their books, and each book's title.
+
+```gql
+query {
+  user(id: 1) {
+    name
+    email
+    books {
+      title
+    }
+  }
+}
+```
+
+![graphiql demo](./images/graphiql_user_query.png)
+
+## Mutations
+
+Mutations allow for creating, updating, and destroying data. [More info on them can be found here.](http://graphql-ruby.org/mutations/mutation_classes) Let's set up a base class from which to extend a `CreateUser` mutation.
+
+```ruby
+# app/graphql/mutations/base_mutation.rb
+class Mutations::BaseMutation < GraphQL::Schema::RelayClassicMutation
+end
+```
+
+
+
+- **Arguments** - Here we specify which arguments to accept as params, which are required, and what object types they are. This is somewhat similar to defining strong params in a Rails controller, but with more fine grained control of what's coming in.
+- **Fields** - The field methods are what get returned to the client. In our case, we accepted arguments to create a user, and we want to return a `user` field with our new model accompanied with an array of `errors` if present.
+- **Resolver** - The `resolve` method is where we execute our ActiveRecord commands. It returns a hash with keys that match the above field names. 
+
+```
+# app/graphql/mutations/create_user.rb
+class Mutations::CreateUser < Mutations::BaseMutation
+  argument :name, String, required: true
+  argument :email, String, required: true
+
+  field :user, Types::UserType, null: false
+  field :errors, [String], null: false
+
+  def resolve(name:, email:)
+    user = User.new(name: name, email: email)
+    if user.save
+      # Successful creation, return the created object with no errors
+      {
+        user: user,
+        errors: [],
+      }
+    else
+      # Failed save, return the errors to the client
+      {
+        user: nil,
+        errors: user.errors.full_messages
+      }
+    end
+  end
+end
+```
+
+Then finally, add the new mutation to the main mutation type class so it's exposed to our API.
+
+```ruby
+# app/graphql/types/mutation_type.rb
+module Types
+  class MutationType < Types::BaseObject
+    field :create_user, mutation: Mutations::CreateUser
+  end
+end
+```
+
+To test, open up `graphiql` and paste in the following:
+
+```gql
+mutation CreateUser {
+  createUser(input: {
+    name: "Bob",
+    email: "bob@email.com"
+  }) {
+ 	user {
+      id
+      name
+      email
+    }
+    errors
+  }
+}
+```
+
