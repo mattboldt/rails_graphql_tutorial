@@ -132,7 +132,7 @@ end
 
 A `query` in graphql is similar to regular `GET` requests in a Rails API. Queries only fetch data, but do not update it. For creating/updating/destroying, a `mutation` is used, but we'll cover that later. In our main query type, we specify some new "endpoints" along with what data to return.
 
-```
+```ruby
 # app/graphql/types/query_type.rb
 module Types
   class QueryType < Types::BaseObject
