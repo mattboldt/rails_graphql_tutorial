@@ -12,7 +12,7 @@ rails db:migrate
 Open `app/models/user.rb` and add the `has_many :books` association.
 Optionally, create some seed data using the `faker` gem in `seeds.rb`, then run `rake db:seed`.
 
-[View commit](https://github.com/mattboldt/rails_graphql_demo/commit/6b4dae1644a552e3a9842b811b055fecce26763f)
+[View commit](https://github.com/mattboldt/rails_graphql_demo/commit/2dfe3298f153d2d43ed1e602d4ecefd23cc0462c)
 
 ## Installing dependencies
 
@@ -101,7 +101,7 @@ For our models, `User` and `Book`, we need to create a series of `types` so Grap
 
 ### User and Book query types
 
-Open up our generated types and add the following fields. Notice each field gets a type and a `null` option of whether or not it needs to be present for the query to succeed. This tells graphql what to expect from incoming and outgoing data, and gives us peace of mind in knowing exactly how to parse data on both the front and back end. 
+Open up our generated types and add the following fields. Notice each field gets a type and a `null` option of whether or not it needs to be present for the query to succeed. This tells graphql what to expect from incoming and outgoing data, and gives us peace of mind in knowing exactly how to parse data on both the front and back end.
 
 ```ruby
 # app/graphql/types/user_type.rb
