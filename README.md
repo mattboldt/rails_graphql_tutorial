@@ -43,9 +43,6 @@ Optionally, create some seed data using the `faker` gem in `seeds.rb`, then run 
 # The ruby implementation of the GraphQL language.
 gem 'graphql'
 
-# Will enable us to send API requests via AJAX to the Rails server.
-gem 'rack-cors'
-
 group :development do
   # A development utility to test GraphQL queries.
   gem 'graphiql-rails'
@@ -100,12 +97,6 @@ end
 ```
 
 [View commit](https://github.com/mattboldt/rails_graphql_demo/commit/0c9b56aa4b0aea178856aebd5832337763826daf)
-
-### Enabling `rack-cors`
-
-After installing `rack-cors`, we need to uncomment the config in `config/initializers/cors.rb`. This will allow AJAX requests to be accepted by our API with proper [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). Keep in mind this config will need to be set up differently in a production environment.
-
-[View commit](https://github.com/mattboldt/rails_graphql_demo/commit/693f5f40dae3aecdc7d7c16f3632aeb153b2f83d)
 
 
 ### Testing queries with Graphiql
@@ -274,7 +265,11 @@ module Types
 end
 ```
 
-To test, open up `graphiql` and paste in the following query. Notice we pass in an `input: {}` argument to `createUser`; this maps to the `:create_user` field and accepts a single `input` argument as opposed to accepting many named args. This reduces the amount of code we need to write when passing a whole json object! But for now, we'll pass our args manually. Learn more about this design [in graphql-ruby's documentation](http://graphql-ruby.org/api-doc/1.8.5/GraphQL/Schema/RelayClassicMutation.html).
+[View commit](https://github.com/mattboldt/rails_graphql_demo/commit/a9da3b891f7454736056a4b03cc0671b60899373)
+
+#### Creating a User
+
+To test, open up `http://localhost:3000/graphiql` and paste in the following query. Notice we pass in an `input: {}` object to `createUser`; this maps to the `:create_user` field which accepts a single `input` argument. Learn more about this design [in graphql-ruby's documentation](http://graphql-ruby.org/api-doc/1.8.5/GraphQL/Schema/RelayClassicMutation.html).
 
 ```gql
 mutation {
