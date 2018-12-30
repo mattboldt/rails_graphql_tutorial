@@ -282,7 +282,7 @@ mutation {
     name: "Matt Boldt",
     email: "me@mattboldt.com"
   }) {
-  	user {
+    user {
       id
       name
       email
