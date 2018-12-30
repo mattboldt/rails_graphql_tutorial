@@ -11,7 +11,7 @@ First, let's define some vocabulary I'll be using through this tutorial.
 - **Queries** - Fetch specific data from the API. It's best practice to make queries read-only, like you would a `GET` request in REST. But queries are _much_ more than just simple `GET`s!
 - **Mutations** - Any modification of data on the API. Think `CREATE, UPDATE, DESTROY`.
 
-- **Types** - Used to define datatypes, or in our case, Rails models. A type contains fields and functions that respond with data based on what's requested in a query / mutation.
+- **Types** - Used to define datatypes, or in our case, Rails models. A type contains fields and functions that respond with data based on what's requested in a query / mutation. Types can also be static, like `String` or `ID`; these are built into the server side library.
 - **Fields** - Represent the attributes for a given type (like attributes on a model).
 - **Functions** - Supply the above fields with data (like methods on a model). 
 
@@ -293,3 +293,11 @@ mutation {
 ```
 
 ![create user](./images/graphiql_create_user.png)
+
+Success! We just created our first model via GraphQL; no extra routes, controllers, or serializers needed. What's more, we only returned exactly the data we needed from the newly created model.
+
+
+
+## Coming Soon: The Frontend
+
+The next tutorial in the GraphQL series will feature a React & Apollo frontend app that connects to our Rails API. Stay tuned!
