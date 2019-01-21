@@ -1,4 +1,4 @@
-# Rails & GraphQL
+# Rails & GraphQL (Part 1)
 
 ![rails and graphql](./images/rails_and_graphql.png)
 
@@ -6,14 +6,14 @@ GraphQL is a query language for APIs, as well as a server side runtime for execu
 
 
 
-First, let's define some vocabulary I'll be using through this tutorial. 
+First, let's define some vocabulary I'll be using through this tutorial.
 
 - **Queries** - Fetch specific data from the API. It's best practice to make queries read-only, like you would a `GET` request in REST. But queries are _much_ more than just simple `GET`s!
 - **Mutations** - Any modification of data on the API. Think `CREATE, UPDATE, DESTROY`.
 
 - **Types** - Used to define datatypes, or in our case, Rails models. A type contains fields and functions that respond with data based on what's requested in a query / mutation. Types can also be static, like `String` or `ID`; these are built into the server side library.
 - **Fields** - Represent the attributes for a given type (like attributes on a model).
-- **Functions** - Supply the above fields with data (like methods on a model). 
+- **Functions** - Supply the above fields with data (like methods on a model).
 
 These 5 Things all work together to fetch, create, mangle, and destroy data in an incredibly readable and intuitive way &mdash; If you can read JSON or Yaml, you can read and write GraphQL!
 
@@ -154,7 +154,7 @@ class GraphqlApiSchema < GraphQL::Schema
 end
 ```
 
-In our main query type file, we define `:users` and `:user` _fields_, along with `users` and `user` _functions_. The `users` field returns an array of `UserType` objects, and can never be `nil` (but can be empty). The `user` field accepts a required argument `:id` that is of the type `ID`, and returns a single `UserType` object. ([`ID` is a built-in type](http://graphql-ruby.org/api-doc/1.8.11/GraphQL/Types.html) that acts just the same as the above `User` and `Book` type.) 
+In our main query type file, we define `:users` and `:user` _fields_, along with `users` and `user` _functions_. The `users` field returns an array of `UserType` objects, and can never be `nil` (but can be empty). The `user` field accepts a required argument `:id` that is of the type `ID`, and returns a single `UserType` object. ([`ID` is a built-in type](http://graphql-ruby.org/api-doc/1.8.11/GraphQL/Types.html) that acts just the same as the above `User` and `Book` type.)
 
 ```ruby
 # app/graphql/types/query_type.rb
@@ -223,7 +223,7 @@ end
 
 - **Fields** - Same concept as Query fields above. In our case, we accepted arguments to create a user, and we want to return a `user` field with our new model accompanied with an array of `errors` if present.
 
-- **Resolver** - The `resolve` method is where we execute our ActiveRecord commands. It returns a hash with keys that match the above field names. 
+- **Resolver** - The `resolve` method is where we execute our ActiveRecord commands. It returns a hash with keys that match the above field names.
 
 
 ```ruby
@@ -296,3 +296,4 @@ Success! We just created our first model via GraphQL; no extra routes, controlle
 ## Coming Soon: The Frontend
 
 The next tutorial in the GraphQL series will feature a React & Apollo frontend app that connects to our Rails API. Stay tuned!
+
